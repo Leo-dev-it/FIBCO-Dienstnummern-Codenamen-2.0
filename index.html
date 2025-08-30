@@ -1,0 +1,258 @@
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>FIBCO Dienstnummern & Codenamen</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eaeaea;
+      min-height: 100vh;
+    }
+
+    /* Hintergrund-Logo als Wasserzeichen */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 800px;
+      height: 800px;
+      background: url("https://bb96bae4bf.cbaul-cdnwnd.com/1e75d494194a7eed7917fd63cc15f723/200000002-8bebe8bec0/700/fib-png--512.png?ph=bb96bae4bf") no-repeat center center;
+      background-size: contain;
+      opacity: 0.15;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+
+    #searchInput {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: #fff;
+      z-index: 1;
+      position: relative;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1a1a;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      z-index: 1;
+      position: relative;
+      table-layout: fixed;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      background: #222;
+      color: #ddd;
+    }
+
+    /* Namen permanent verschwommen wie Hover-Effekt */
+    td.name {
+      filter: blur(5px);
+      transition: none; /* kein Effekt beim Hover */
+      cursor: default;
+      color: #fff;
+    }
+
+    tr:hover {
+      background: #2a2a2a;
+    }
+
+    /* Disclaimer Overlay */
+    #disclaimerOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(17,17,17,0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeIn 0.8s ease;
+    }
+
+    #disclaimerBox {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px; /* leicht abgerundet */
+      border: 3px solid #fff; /* weißer Rahmen */
+      text-align: center;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      position: relative;
+      animation: slideUp 0.8s ease;
+    }
+
+    #disclaimerBox h2 {
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    #disclaimerBox p {
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+
+    #disclaimerTimer {
+      font-size: 16px;
+      color: #ff4444;
+      margin-top: 10px;
+    }
+
+    #disclaimerButton {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #444;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #disclaimerButton:hover {
+      background: #666;
+    }
+
+    /* FIB Logo im Disclaimer zentriert und größer */
+    #fibLogo {
+      position: static;
+      display: block;
+      margin: 0 auto 20px auto; /* zentriert und Abstand nach unten */
+      width: 120px;
+      height: 120px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Disclaimer Overlay -->
+  <div id="disclaimerOverlay">
+    <div id="disclaimerBox">
+      <!-- Logo zentriert und groß -->
+      <img id="fibLogo" src="https://bb96bae4bf.cbaul-cdnwnd.com/1e75d494194a7eed7917fd63cc15f723/200000002-8bebe8bec0/700/fib-png--512.png?ph=bb96bae4bf" alt="FIB Logo">
+      
+      <h2>Disclaimer</h2>
+      <p>
+        Dieser Dienstnummern- und Codenamen-Rechner wird von der <b>FIBCO</b> bereitgestellt.<br>
+        Für fehlerhafte Daten oder falsche Verwendungen wird keine Haftung übernommen.
+      </p>
+      <p>
+        Beschwerden können jederzeit über den folgenden Link eingereicht werden:  
+        <br>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScbj_juaXbuI1YI2bWy25FYzs4jFYRa8LSFNWQzuIhvkLQJ7A/viewform" target="_blank" style="color:#4da6ff; text-decoration: underline;">
+          Beschwerde einreichen
+        </a>
+      </p>
+      <p id="disclaimerTimer">Du kannst in 15 Sekunden fortfahren...</p>
+      <button id="disclaimerButton">Verstanden & Fortfahren</button>
+    </div>
+  </div>
+
+  <h1>FIBCO Dienstnummern & Codenamen</h1>
+  <input type="text" id="searchInput" placeholder="Suchen nach Dienstnummer oder Codename...">
+
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Dienstnummer</th>
+        <th>Name</th>
+        <th>Codename</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>31</td><td class="name">Candra Vice</td><td>Kimiko</td></tr>
+      <tr><td>14</td><td class="name">Fero Federov</td><td>Alpha</td></tr>
+      <tr><td>27</td><td class="name">Roob Kekse</td><td>Keks</td></tr>
+      <tr><td>118</td><td class="name">Johnny Bommel</td><td>Star</td></tr>
+      <tr><td>49</td><td class="name">Luigi Taylor</td><td>Viper</td></tr>
+      <tr><td>90</td><td class="name">Tim Chessee</td><td>Charlie</td></tr>
+      <tr><td>236</td><td class="name">Marko Scheffler</td><td>Delta</td></tr>
+      <tr><td>2</td><td class="name">Moritz Yane</td><td>Adler</td></tr>
+      <tr><td>136</td><td class="name">Hugo Federov</td><td>Echo</td></tr>
+      <tr><td>33</td><td class="name">Moo Nevergone</td><td>Ombra</td></tr>
+      <tr><td>56</td><td class="name">Luca Vernandes</td><td>Ordo</td></tr>
+      <tr><td>111</td><td class="name">Christiano Blaq</td><td>Brabus</td></tr>
+      <tr><td>119</td><td class="name">Pencil Federov</td><td>Anonymous</td></tr>
+      <tr><td>61</td><td class="name">Alvaro Alvarez</td><td>Castle</td></tr>
+      <tr><td>145</td><td class="name">Fynn Andreas</td><td>Toast</td></tr>
+      <tr><td>140</td><td class="name">Daniel Federov</td><td>Prada</td></tr>
+      <tr><td>43</td><td class="name">Chiko King</td><td>/</td></tr>
+      <tr><td>134</td><td class="name">Luki Loco</td><td>Läufer</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Live-Suche
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+      let filter = this.value.toLowerCase();
+      let rows = document.querySelectorAll("#dataTable tbody tr");
+      rows.forEach(row => {
+        let text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+      });
+    });
+
+    // Disclaimer Timer + Button
+    let seconds = 15;
+    let timerElement = document.getElementById("disclaimerTimer");
+    let overlay = document.getElementById("disclaimerOverlay");
+    let button = document.getElementById("disclaimerButton");
+
+    let countdown = setInterval(() => {
+      seconds--;
+      timerElement.textContent = "Du kannst in " + seconds + " Sekunden fortfahren...";
+      if (seconds <= 0) {
+        clearInterval(countdown);
+        overlay.style.display = "none";
+      }
+    }, 1000);
+
+    button.addEventListener("click", () => {
+      clearInterval(countdown);
+      overlay.style.display = "none";
+    });
+  </script>
+
+</body>
+</html>
